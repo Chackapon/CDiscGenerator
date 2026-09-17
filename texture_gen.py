@@ -60,7 +60,7 @@ def generate_disc_textures( data_file ):
     addon_name = to_filename_format(config['ADDON_NAME'])
 
     item_texture = json.load( open(assets_dir / "item_texture.json") )
-    print(json.dumps( item_texture, indent=4 ))
+    # print(json.dumps( item_texture, indent=4 ))
 
     with open(data_file) as json_file:
         discs = list(json.load(json_file)["discs"])

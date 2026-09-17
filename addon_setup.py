@@ -63,15 +63,29 @@ def generate_disc_items( data_file ):
     discs = json.loads(open(data_file).read())['discs']
 
     for disc in discs: # TODO fix this shi
-        disc_item = json.loads( open( assets_dir / "record.example.json" ).read())
-        record_name = get_recordname(disc['artist'], disc['title'])
 
-        disc_item["minecraft:item"]["description"]["identifier"] = f"{addon_name}:{to_filename_format(disc['artist'])}.{to_filename_format(disc['title'])}"
+        if "artist" in disc:
+            disc_artist = disc["artist"]
+        else:
+            disc_artist = "Various Artists"
+
+        disc_item = json.loads( open( assets_dir / "record.example.json" ).read())
+
+        record_name = get_recordname(disc_artist, disc['title'])
+        disc_item["minecraft:item"]["description"][
+            "identifier"] = f"{addon_name}:{to_filename_format(disc['artist'])}.{to_filename_format(disc['title'])}"
         disc_item["minecraft:item"]["components"]["minecraft:icon"] = record_name
-        disc_item["minecraft:item"]["components"]["cdisc:record"]['sound'] = record_name
-        disc_item["minecraft:item"]["components"]["cdisc:record"]['author'] = disc['artist']
-        disc_item["minecraft:item"]["components"]["cdisc:record"]['title'] = disc['title']
-        disc_item["minecraft:item"]["components"]["cdisc:record"]['duration'] = 100 # TODO fix this
+
+        # print( json.dumps(disc['songs'], indent=4) )
+
+        if len(disc["songs"]) == 1: # TODO tidy this up
+            sound_name = get_recordname(disc_artist, disc['songs'][0]['title'])
+            disc_item["minecraft:item"]["components"]["cdisc:record"]['sound'] = sound_name
+            disc_item["minecraft:item"]["components"]["cdisc:record"]['author'] = disc_artist
+            disc_item["minecraft:item"]["components"]["cdisc:record"]['title'] = disc['songs'][0]['title']
+            disc_item["minecraft:item"]["components"]["cdisc:record"]['duration'] = 100 # TODO fix this
+
+        print( json.dumps(disc_item, indent=4))
 
         print((export_dir / config['ADDON_NAME'] / f"{addon_name}_bp" / "items" /  f"{record_name}.json"))
 

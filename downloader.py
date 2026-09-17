@@ -39,7 +39,7 @@ def download_songs( data_file, export_dir: Path ):
     with open(data_file) as json_file:
 
         sound_definitions = json.load( open( assets_dir / "sound_definitions.json") )
-        print( json.dumps(sound_definitions, indent=4))
+        # print( json.dumps(sound_definitions, indent=4))
 
 
         discs = list(json.load(json_file)["discs"])
@@ -83,7 +83,7 @@ def download_songs( data_file, export_dir: Path ):
                             download_song( song["url"], artist, title )
                             #
                             sound_definitions['sound_definitions'].update(sounddef_record(artist, title)) # TODO check if file already exists
-                            print(json.dumps(sound_definitions, indent=4))
+                            # print(json.dumps(sound_definitions, indent=4))
 
             json.dump(
                 sound_definitions,
