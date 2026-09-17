@@ -1,0 +1,6 @@
+ADDON_NAME: Test DiscPack
+
+AUDIO_DIR: audio
+
+EXPORT_DIR: export
+ASSETS_DIR: assets

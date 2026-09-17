@@ -1,0 +1,14 @@
+[project]
+name = "youtubetodiscpack"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "ffmpeg-python>=0.2.0",
+    "pafy>=0.5.5",
+    "pillow>=12.3.0",
+    "pytubefix>=11.1.0",
+    "pyyaml>=6.0.3",
+    "youtube-dl>=2021.12.17",
+    "youtube-to-audio>=0.1.8",
+    "yt-dlp>=2026.8.19",
+]

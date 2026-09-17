@@ -1,0 +1,59 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "[Requires CDisc API]",
+    "name": "YT DiscPack [BP]",
+    "uuid": "c8bde9ab-e9ca-4c69-a14c-bfa0e9a87875",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      26,
+      40
+    ]
+  },
+  "modules": [
+    {
+      "description": "Data module",
+      "type": "data",
+      "uuid": "151f8688-4c32-4d43-a2f5-79be7572f123",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "2c74ed67-a4f9-408e-aa85-cf98c2706002",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "uuid": "c4c3b4b2-7514-43c8-b3ce-668588dbac60",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.9.0"
+    }
+  ],
+  "metadata": {
+    "authors": [
+      "Chackapon"
+    ],
+    "license": "MIT",
+    "url": "http://www.google.com"
+  }
+}

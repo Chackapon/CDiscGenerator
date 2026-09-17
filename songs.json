@@ -1,0 +1,32 @@
+{
+  "example_discs": [
+    {
+      "label_colors": [],
+      "disc_colors": [],
+      "songs": [
+        {
+          "title": "",
+          "artist": "",
+          "url": [],
+          "audio": []
+        }
+      ]
+    }
+  ],
+
+  "discs": [
+    {
+      "artist": "Interpol",
+      "title": "Antics",
+      "label_colors": ["#ff0000"],
+      "disc_colors": [],
+      "songs": [
+        {
+          "title": "Slow Hands",
+          "url": "https://m.youtube.com/watch?v=uq1WvXTb7G4",
+          "audio": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "[Requires CDisc API]",
+    "name": "YT DiscPack [RP]",
+    "uuid": "2c74ed67-a4f9-408e-aa85-cf98c2706002",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      26,
+      40
+    ]
+  },
+  "modules": [
+    {
+      "description": "Resources module",
+      "type": "resources",
+      "uuid": "1ee408cd-c96d-4446-adf4-fe37963efcd5",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}
