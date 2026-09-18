@@ -1,5 +1,6 @@
 def to_filename_format( str ):
-    split_spaces = str.split(" ")
+    sanitized_str = str.replace(".", "_").replace("/", "_")
+    split_spaces = sanitized_str.split(" ")
     lower_case = [ word.lower() for word in split_spaces ]
     connect = '_'.join(lower_case)
     return connect

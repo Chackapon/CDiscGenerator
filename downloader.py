@@ -29,7 +29,7 @@ def sounddef_record( artist, title ):
     }
 
 
-def download_songs( data_file, export_dir: Path ):
+def add_songs( data_file, export_dir: Path ):
 
     current_dir = Path(__file__).parent.absolute()
     assets_dir = current_dir / config['ASSETS_DIR']
@@ -47,16 +47,16 @@ def download_songs( data_file, export_dir: Path ):
         for disc in discs:
 
             # Get artist name for the disc
-            if "artist" in disc:
-                disc_artist = disc["artist"]
-            else:
-                disc_artist = "Various Artists"
+            disc_artist = get_disc_artist(disc)
 
             # Get disc name
             disc_title = disc["title"]
 
-            if len(disc["songs"]) > 0: # TODO change to multidisc check
+            if len(disc["songs"]) > 0: # TODO change to multidisc check (is it necessary tho?)
+
                 for song in disc["songs"]:
+                    # print("@ SONG")
+                    # print(json.dumps(song, indent=4))
                     # print(json.dumps(song, indent=4))
 
                     # Get artist name for the song
@@ -70,19 +70,21 @@ def download_songs( data_file, export_dir: Path ):
 
 
 
-                    print(type(song["url"]))
+                    # print(type(song["url"]))
 
                     if "url" in song:
-                        if song["url"] is list: # TODO fix
-
-                            for url in song["url"]:
-                                pass #TODO add multidisc support
+                        if isinstance(song["url"], list): # TODO make smarter
+                            download_songs_yt(song["url"], artist, title)
 
                         elif isinstance(song["url"], str):
+                            download_songs_yt( [song["url"]], artist, title )
 
-                            download_song( song["url"], artist, title )
+                    elif "audio" in song:
+                        pass # load from audio folder
+                    else:
+                        raise RuntimeError("Audio source for the disc was not specified")
                             #
-                            sound_definitions['sound_definitions'].update(sounddef_record(artist, title)) # TODO check if file already exists
+                    sound_definitions['sound_definitions'].update(sounddef_record(artist, title)) # TODO check if file already exists
                             # print(json.dumps(sound_definitions, indent=4))
 
             json.dump(
@@ -92,27 +94,73 @@ def download_songs( data_file, export_dir: Path ):
             )
 
 
-def download_song( url: str, artist: str, title: str ):
+def get_disc_artist(disc) -> Any:
+    if "artist" in disc:
+        disc_artist = disc["artist"]
+    else:
+        disc_artist = "Various Artists"
+    return disc_artist
+
+def get_songs_from_audio( audios: list[str], artist: str, title: str  ):
+    current_dir = Path(__file__).parent.absolute()
+    audio_dir = current_dir / config['AUDIO_DIR']
+
+
+    sources = []
+
+    for audio in audios:
+        audio_path = Path(audio_dir / audio)
+        if audio_path.exists():
+            source = ffmpeg.input( str(audio_path.resolve()) )
+            sources.append(source)
+        else:
+            print(f"No audio found for {audio_path}")
+
+    ffmpeg_from_sources(artist, sources, title)
+
+
+def ffmpeg_from_sources(artist: str, sources: list[Any], title: str):
+    current_dir = Path(__file__).parent.absolute()
+    export_dir = current_dir / config['EXPORT_DIR']
+    addon_name = to_filename_format(config['ADDON_NAME'])
+
+    filename = get_recordname(artist, title)
+    print(filename)
+
+    joined = ffmpeg.concat(*sources, v=0, a=1)
+
+    ffmpeg.output(
+        joined,
+        str(export_dir / config['ADDON_NAME'] / f"{addon_name}_rp" / "sounds" / "records" / f"{filename}.ogg"),
+        # acodec='libopus',
+        format='ogg',
+        ac=1,
+        ab="128k",
+        ar="44100",
+        # loglevel="error",
+    ).run()  # TODO check if file already exists
+
+
+def download_songs_yt( urls: list[str], artist: str, title: str ):
 
     current_dir = Path(__file__).parent.absolute()
     export_dir = current_dir / config['EXPORT_DIR']
     addon_name = to_filename_format(config['ADDON_NAME'])
 
-    yt = pytubefix.YouTube(url)
-    stream = yt.streams.get_audio_only()
+    sources = []
 
-    filename = get_recordname(artist, title)
-    print(filename)
+    for url in urls:
+        yt = pytubefix.YouTube(url)
+        audio_stream = yt.streams.get_audio_only()
+        if audio_stream:
+            source = ffmpeg.input(audio_stream.url)
+            sources.append(source)
+        else:
+            print(f"No audio found for {url}")
 
-    if not stream: raise RuntimeError(f"No audio stream found for {artist} and {title}")
-    #
-    # print(str(export_dir / f"{filename}.ogg"))
-    ffmpeg.input(stream.url).output(
-        str(export_dir / config['ADDON_NAME'] / f"{addon_name}_rp" / "sounds" / "records" / f"{filename}.ogg"),
-        format="ogg",
-        loglevel="error",
-    ).run()  # TODO check if file already exists
+    ffmpeg_from_sources(artist, title, sources)
 
 
 if __name__ == "__main__":
-    download_songs("songs.json", 'export')
+    pass
+    # download_songs("songs.json", 'export')

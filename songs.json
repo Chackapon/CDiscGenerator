@@ -1,28 +1,21 @@
 {
-  "example_discs": [
-    {
-      "label_colors": [],
-      "disc_colors": [],
-      "songs": [
-        {
-          "title": "",
-          "artist": "",
-          "url": [],
-          "audio": []
-        }
-      ]
-    }
-  ],
-
   "discs": [
     {
       "artist": "Interpol",
-      "title": "Antics",
+      "title": "Interpol EP",
       "label_colors": ["#ff0000"],
       "disc_colors": [],
       "songs": [
         {
-          "title": "Slow Hands",
+          "title": "PDA / NYC",
+          "url": [
+            "https://www.youtube.com/watch?v=5GRNCNZ_TL4",
+            "https://www.youtube.com/watch?v=3oL5QQ-6sQ0"
+          ],
+          "audio": []
+        },
+        {
+          "title": "Specialist",
           "url": "https://m.youtube.com/watch?v=uq1WvXTb7G4",
           "audio": []
         }

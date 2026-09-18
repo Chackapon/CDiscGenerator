@@ -20,10 +20,6 @@
 			"minecraft:hand_equipped": false,
 
 			"cdisc:record": {
-				"sound": "record.example_artist.example_song",
-				"title": "Example Song",
-				"author": "Example Artist",
-				"duration": 67
 			}
 		}
 	}

@@ -4,7 +4,7 @@ import uuid
 from pathlib import Path
 from textwrap import indent
 
-from downloader import download_songs
+from downloader import add_songs
 from filename import to_filename_format, get_recordname
 
 import yaml
@@ -26,7 +26,7 @@ def update_manifest_rp( rp_uuid ):
 
     # print(json.dumps(manifest, indent=4))
 
-    print(export_dir / config['ADDON_NAME'] / f"{addon_name}_rp")
+    # print(export_dir / config['ADDON_NAME'] / f"{addon_name}_rp")
     json.dump(
         manifest,
         open( export_dir / config['ADDON_NAME'] / f"{addon_name}_rp" / "manifest.json", "w" ),
@@ -45,7 +45,7 @@ def update_manifest_bp( rp_uuid ):
     manifest['modules'][0]['uuid'] = str(uuid.uuid4())
     manifest['dependencies'][0]['uuid'] = rp_uuid
 
-    print(export_dir / config['ADDON_NAME'] / f"{addon_name}_bp")
+    # print(export_dir / config['ADDON_NAME'] / f"{addon_name}_bp")
     json.dump(
         manifest,
         open( export_dir / config['ADDON_NAME'] / f"{addon_name}_bp" / "manifest.json", "w" ),
@@ -77,6 +77,33 @@ def generate_disc_items( data_file ):
         disc_item["minecraft:item"]["components"]["minecraft:icon"] = record_name
 
         # print( json.dumps(disc['songs'], indent=4) )
+        if len(disc["songs"]) > 1:
+
+            record_component = disc_item["minecraft:item"]["components"]["cdisc:record"]
+            record_component['songs'] = []
+
+
+            # for i in range(len(disc["songs"])):
+            for song in disc['songs']:
+
+                # Get the artist for the disc side
+                if "artist" in song:
+                    song_artist = song["artist"]
+                else:
+                    song_artist = disc_artist
+                # Get song title
+                song_title = song['title']
+
+
+                song_id = to_filename_format(song_title)
+                record_component[song_id] = {}
+
+
+                record_component['songs'].append(song_id)
+                record_component[song_id]['sound'] = get_recordname(song_artist, song_title)
+                record_component[song_id]['author'] = song_artist
+                record_component[song_id]['title'] = song_title
+                record_component[song_id]['duration'] = 100 # TODO get that from file
 
         if len(disc["songs"]) == 1: # TODO tidy this up
             sound_name = get_recordname(disc_artist, disc['songs'][0]['title'])
@@ -85,9 +112,9 @@ def generate_disc_items( data_file ):
             disc_item["minecraft:item"]["components"]["cdisc:record"]['title'] = disc['songs'][0]['title']
             disc_item["minecraft:item"]["components"]["cdisc:record"]['duration'] = 100 # TODO fix this
 
-        print( json.dumps(disc_item, indent=4))
+        # print( json.dumps(disc_item, indent=4))
 
-        print((export_dir / config['ADDON_NAME'] / f"{addon_name}_bp" / "items" /  f"{record_name}.json"))
+        # print((export_dir / config['ADDON_NAME'] / f"{addon_name}_bp" / "items" /  f"{record_name}.json"))
 
         json.dump(
             disc_item,
@@ -102,7 +129,6 @@ def create_addon( data_file ):
     addon_name = to_filename_format(config['ADDON_NAME'])
 
     if not export_dir.exists():
-        print("yum")
         export_dir.mkdir()
         ( export_dir / config['ADDON_NAME'] ).mkdir()
 
@@ -123,7 +149,7 @@ def create_addon( data_file ):
     generate_disc_items( data_file )
 
     sound_export_dir = export_dir / config['ADDON_NAME'] / f"{addon_name}_rp" / "sounds" / "records"
-    download_songs(data_file, sound_export_dir)
+    add_songs(data_file, sound_export_dir)
     generate_disc_textures( data_file )
 
 
